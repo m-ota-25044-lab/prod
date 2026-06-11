@@ -1,8 +1,31 @@
 let participantId = localStorage.getItem("participantId");
 
-if (!participantId) {
-  participantId = crypto.randomUUID();
-  localStorage.setItem("participantId", participantId);
+function getConditionFormID(pid) { //条件を決める
+  const id = Number(pid);
+
+  if (id >= 1 && id <= 200) 
+    learnType = "analog", answerType = "analog";
+  else if (id >= 201 && id <= 400) 
+    learnType = "analog", answerType = "digital";
+  else if (id >= 401 && id <= 600) 
+    learnType = "digital", answerType = "analog";
+  else if (id >= 601 && id <= 800) 
+    learnType = "digital", answerType = "digital";
+  return null;
+}
+
+const parms = new URLSearchParams(window.location.search);
+const pidFromURL = parms.get("pid");
+
+if (pidFromURL) { //URLから参加者IDを取得して条件を決める
+  const cond = getConditionFormID(pidFromURL);
+  if (cond) {
+    window.participantId = pidFromURL;
+    window.learnType = cond.learnType;
+    window.answerType = cond.answerType;
+    window.condition = `${cond.learnType}_learn_${cond.answerType}_answer`;
+    console.log("URLから参加者IDを取得:", window.condition);
+  }
 }
 
 const questions = [
@@ -123,6 +146,8 @@ if (finishButton) {
     
     const payload = {
       participantId: participantId,
+      learnType: learnType,
+      answerType: answerType,
       condition: condition,
       totalTimeSec: totalTimeSec,
       totalCorrect: totalCorrect,
