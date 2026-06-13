@@ -1,0 +1,31 @@
+body {
+  font-family: "Noto Sans JP", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgb(33, 33, 33);
+  margin: 0%;
+}
+
+.choicebox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 20px;
+  margin: 8px 0;
+  border: 2px solid rgb(33, 33, 33);
+  cursor: pointer;
+}
+
+.checkFrame {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgb(33, 33, 33);
+  margin-right: 10px;
+}
+
+.choiceBox:hover {
+  background-color: rgb(240, 240, 240);
+}

@@ -4,13 +4,13 @@ function getConditionFormID(pid) { //条件を決める
   const id = Number(pid);
 
   if (id >= 1 && id <= 200) 
-    learnType = "analog", answerType = "analog";
+    return { learnType: "analog", answerType: "analog" };
   else if (id >= 201 && id <= 400) 
-    learnType = "analog", answerType = "digital";
+    return { learnType: "analog", answerType: "digital" };
   else if (id >= 401 && id <= 600) 
-    learnType = "digital", answerType = "analog";
+    return { learnType: "digital", answerType: "analog" };
   else if (id >= 601 && id <= 800) 
-    learnType = "digital", answerType = "digital";
+    return { learnType: "digital", answerType: "digital" };
   return null;
 }
 
@@ -77,9 +77,9 @@ function showQuestions() {
       ${choices
         .map(
           c => `
-        <button class="choice" data-qid="${q.id}" data-value="${c}">
-          ${c}
-        </button>
+        <div class="choicebox" data-qid="${q.id}" data-value="${c}">
+        <span class="choiceText">${c}</span>
+        </div>
       `
         )
         .join("")}
@@ -94,7 +94,7 @@ function showQuestions() {
 const results = [];
 
 function setupChoiceHandlers() {
-  document.querySelectorAll(".choice").forEach(btn => {
+  document.querySelectorAll(".choicebox ").forEach(btn => {
     btn.addEventListener("click", () => {
       const qid = Number(btn.dataset.qid);
       const value = btn.dataset.value;
@@ -125,9 +125,16 @@ let testStart = null;
 const startButton = document.getElementById("start");
 if (startButton) {
   startButton.addEventListener("click", () => {
-    testStart = Date.now();
-    results.length = 0;  // 前回のデータをリセット
-    showQuestions();
+    if (window.answerType === "analog") { //アナログ回答の場合；問題を出さない
+      document.getElementById("quiz").innerHTML = ""; //問題を出さない
+      document.getElementById("finish").style.display = "block"; // 回答終了ボタンを表示
+    }
+    if (window.answerType === "digital") { //デジタル回答の場合；問題を出す
+      testStart = Date.now(); //テスト開始時刻を記録
+      results.length = 0; //結果を初期化
+      showQuestions();
+      document.getElementById("finish").style.display = "block"; // 回答終了ボタンを表示
+    }
   });
 }
 
@@ -139,16 +146,11 @@ if (finishButton) {
     const testEnd = Date.now();
     const totalTimeSec = (testEnd - testStart) / 1000;
     const totalCorrect = results.filter(r => r.correct).length;
-
-    const learnType = Math.random() < 0.5 ? "analog" : "digital"; // ここで実験条件を指定
-    const answerType = Math.random() < 0.5 ? "analog" : "digital"; // ここで回答形式を指定
-    const condition = `${learnType}_Learn__${answerType}_Answer`; // 条件をまとめる
-    
     const payload = {
-      participantId: participantId,
-      learnType: learnType,
-      answerType: answerType,
-      condition: condition,
+      participantId: window.participantId,
+      learnType: window.learnType,
+      answerType: window.answerType,
+      condition: window.condition,
       totalTimeSec: totalTimeSec,
       totalCorrect: totalCorrect,
       questions: results,
