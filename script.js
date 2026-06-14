@@ -157,7 +157,7 @@ if (finishButton) {
       timestamp: new Date().toISOString()
     };
 
-    fetch("https://sandbox-dhdw.onrender.com/submit", {
+    fetch("https://prod-h9qw.onrender.com/submit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
