@@ -17,7 +17,12 @@ function getConditionFormID(pid) { //条件を決める
 const parms = new URLSearchParams(window.location.search);
 const pidFromURL = parms.get("pid");
 
-if (pidFromURL) { //URLから参加者IDを取得して条件を決める
+if(!pidFromURL) {
+  document.getElementById("pid-input-area").style.display = "block"; //参加者IDをURLから取得できない場合に入力画面表示
+  document.getElementById("start").style.display = "none";
+  document.getElementById("finish").style.display = "none";
+  document.getElementById("quiz").style.display = "none"; //クイズを非表示
+} else { //参加者IDがURLから取得できる場合
   const cond = getConditionFormID(pidFromURL);
   if (cond) {
     window.participantId = pidFromURL;
@@ -28,11 +33,26 @@ if (pidFromURL) { //URLから参加者IDを取得して条件を決める
   }
 }
 
+const pidSubmit = document.getElementById("pid-submit");
+if (pidSubmit) {
+  pidSubmit.addEventListener("click", () => {
+    const pid = document.getElementById("pid").value;
+
+    if (!pid || isNaN(pid) || Number(pid) < 1 || Number(pid) > 800) {
+      alert("有効な参加者IDを入力してください（1〜800の数字）");
+      return;
+    }
+    window.location.href = `?pid=${pid}`; //参加者IDをURLに付加してリロード
+  });
+}
+
 const questions = [
     {
+        id: 1,
         text: "", correct: "", //ここで実際の問題文と正解を入れる
     },
     {
+        id: 2,
         text: "", correct: "",
     }, //これを必要な数だけ繰り返す
 ];
@@ -54,8 +74,9 @@ function generateChoices(correctLabel) {
   return shuffle(choices);
 }
 
-const quiz = qquestions.map(q => {
+const quiz = questions.map(q => {
     return {
+        id: q.id,
         text: q.text,
         correct: q.correct,
         choices: generateChoices(q.correct)
@@ -125,15 +146,18 @@ let testStart = null;
 const startButton = document.getElementById("start");
 if (startButton) {
   startButton.addEventListener("click", () => {
+    startButton.style.display = "none"; //スタートボタンを消す
     if (window.answerType === "analog") { //アナログ回答の場合；問題を出さない
-      document.getElementById("quiz").innerHTML = ""; //問題を出さない
-      document.getElementById("finish").style.display = "block"; // 回答終了ボタンを表示
+      quizDiv.style.display = "none"; //クイズを非表示
+      finishButton.style.display = "block"; // 回答終了ボタンを表示
+      testStart = Date.now(); //テスト開始時刻を記録
     }
     if (window.answerType === "digital") { //デジタル回答の場合；問題を出す
+      quizDiv.style.display = "block"; //クイズを表示
       testStart = Date.now(); //テスト開始時刻を記録
       results.length = 0; //結果を初期化
-      showQuestions();
-      document.getElementById("finish").style.display = "block"; // 回答終了ボタンを表示
+      showQuestions(); //問題を表示
+      finishButton.style.display = "block"; // 回答終了ボタンを表示
     }
   });
 }
