@@ -6,6 +6,10 @@ import json
 app = Flask(__name__, static_folder='.')
 CORS(app)
 
+@app.get("/health")
+def health():
+    return "ok", 200
+
 # --- 静的ファイル ---
 @app.get("/")
 def home():
@@ -13,7 +17,10 @@ def home():
 
 @app.get("/<path:path>")
 def static_files(path):
+    if os.path.exists(path):
     return send_from_directory('.', path)
+    else:
+        return "File not found", 404
 
 # --- 結果保存 ---
 @app.post("/submit")
