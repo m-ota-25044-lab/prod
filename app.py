@@ -22,6 +22,10 @@ def static_files(path):
     else:
         return "File not found", 404
 
+@app.get("/favicon.ico")
+def favicon():
+    return send_from_directory('.', 'favicon.ico')
+
 # --- 結果保存 ---
 @app.post("/submit")
 def submit():
