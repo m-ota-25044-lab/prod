@@ -17,14 +17,14 @@ def home():
 
 @app.get("/<path:path>")
 def static_files(path):
-    if os.path.exists(path):
+    if os.path.isfile(path):
         return send_from_directory('.', path)
     else:
         return "File not found", 404
 
 @app.get("/favicon.ico")
 def favicon():
-    return send_from_directory('.', 'favicon.ico')
+    return "", 204
 
 # --- 結果保存 ---
 @app.post("/submit")
