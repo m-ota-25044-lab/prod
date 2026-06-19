@@ -18,7 +18,7 @@ def home():
 @app.get("/<path:path>")
 def static_files(path):
     if os.path.exists(path):
-    return send_from_directory('.', path)
+        return send_from_directory('.', path)
     else:
         return "File not found", 404
 
