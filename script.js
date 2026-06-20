@@ -6,13 +6,21 @@ let condition = null; // 修正: グローバル条件も初期化
 function getConditionFormID(pid) { //条件を決める
   const id = Number(pid);
 
-  if (id >= 1 && id <= 200) 
+  if (id >= 1 && id <= 25) //1~100は試験用のpid
     return { learnType: "analog", answerType: "analog" };
-  else if (id >= 201 && id <= 400) 
+  else if (id >= 26 && id <= 50)
     return { learnType: "analog", answerType: "digital" };
-  else if (id >= 401 && id <= 600) 
+  else if (id >= 51 && id <= 75)
     return { learnType: "digital", answerType: "analog" };
-  else if (id >= 601 && id <= 800) 
+  else if (id >= 76 && id <= 100)
+    return { learnType: "digital", answerType: "digital" };
+  else if (id >= 101 && id <= 300) //ここからが本番用
+    return { learnType: "analog", answerType: "analog" };
+  else if (id >= 301 && id <= 500) 
+    return { learnType: "analog", answerType: "digital" };
+  else if (id >= 501 && id <= 700) 
+    return { learnType: "digital", answerType: "analog" };
+  else if (id >= 701 && id <= 900) 
     return { learnType: "digital", answerType: "digital" };
   return null;
 }
@@ -40,7 +48,7 @@ if(!pidFromURL) {
     document.getElementById("finish").style.display = "none";
   } else {
     // 修正: 無効な参加者IDが来た場合は開始前にUIを戻す
-    alert("無効な参加者IDです。1〜800の数字を指定してください。");
+    alert("無効な参加者IDです。1〜900の数字を指定してください。");
     document.getElementById("pid-input-area").style.display = "block";
     document.getElementById("start").style.display = "none";
     document.getElementById("finish").style.display = "none";
