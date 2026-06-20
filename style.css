@@ -4,6 +4,12 @@
   font-style: normal;
 }
 
+body {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
 .choicebox {
   display: flex;
   flex-direction: column;
