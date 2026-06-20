@@ -1,12 +1,7 @@
-body {
-  font-family: "Noto Sans JP", sans-serif;
-  font-optical-sizing: auto;
+.biz-udpgothic-regular {
+  font-family: "BIZ UDPGothic", sans-serif;
   font-weight: 400;
   font-style: normal;
-  font-size: 16px;
-  line-height: 1.6;
-  color: rgb(33, 33, 33);
-  margin: 0%;
 }
 
 .choicebox {
