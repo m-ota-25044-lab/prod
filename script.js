@@ -81,17 +81,43 @@ if (pidSubmit) {
 const questions = [
     {
         id: 1,
-        text: "", correct: "", //ここで実際の問題文と正解を入れる
+        text: "ex) a", correct: "1", //ここで実際の問題文と正解を入れる
     },
     {
         id: 2,
-        text: "", correct: "",
-    }, //これを必要な数だけ繰り返す
+        text: "ex) b", correct: "2",
+    }, 
+    {
+      id: 3,
+      text: "ex) c", correct: "3",
+    },
+    {
+      id: 4,
+      text: "ex) d", correct: "4"
+    }
 ];
 
 const choicePool = [
-    "", //ここで実際の選択肢を入れる
-    "", //これも必要な数だけ繰り返す
+    "1", //ここで実際の選択肢を入れる
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
 ];
 
 function shuffle(array) {
