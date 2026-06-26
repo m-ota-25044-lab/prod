@@ -56,29 +56,41 @@ if(!pidFromURL) {
   }
 }
 
-const pidSubmit = document.getElementById("pid-submit");
-if (pidSubmit) {
-  pidSubmit.addEventListener("click", () => {
-    const pid = document.getElementById("pid").value;
-
-    if (!pid || isNaN(pid) || Number(pid) < 1 || Number(pid) > 800) {
-      alert("有効な参加者IDを入力してください（1〜800の数字）");
-      return;
-    }
-    // 修正: フォーム送信時にもquizを初期化（URLに?pidをつけてリロードされる前に初期化）
+window.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const pid = urlParams.get("pid");
+  if (pid) {
     const cond = getConditionFormID(pid);
     if (cond) {
       window.participantId = pid;
       window.learnType = cond.learnType;
       window.answerType = cond.answerType;
       window.condition = `${cond.learnType}_learn_${cond.answerType}_answer`;
+      document.getElementById("pid-input-area").style.display = "none";
+      document.getElementById("start").style.display = "block";
       initializeQuiz();
     }
-    window.location.href = `?pid=${pid}`; //参加者IDをURLに付加してリロード
-  });
+  }
+});
+
+const pidSubmit = document.getElementById("pid-submit");
+if (pidSubmit) {
+  pidSubmit.addEventListener("click", () => {
+    const pid = document.getElementById("pid").value;
+    if (!pid || isNaN(pid) || pid < 1 || pid > 900) {
+      alert("有効な参加者IDを入力してください（1〜900の数字）。");
+      return;
+    }
+    window.location.href = `?pid=${pid}`
+  }
+  );
 }
 
-const questions = [
+document.getElementById("start").addEventListener("click", () => {
+  showQuestions();
+});
+
+const Questions = [
     {
         id: 1,
         text: "ex) a", correct: "1", //ここで実際の問題文と正解を入れる
@@ -145,7 +157,7 @@ function generateChoices(correctLabel) {
 // 修正: generateChoices() をpid設定後にしか実行しないよう遅延初期化
 let quiz = null;
 function initializeQuiz() {
-  quiz = questions.map(q => {
+  quiz = Questions.map(q => {
     return {
       id: q.id,
       text: q.text,
