@@ -73,7 +73,7 @@ function setParticipantFromPid(pid) {
   return true;
 }
 
-function submitPid(event) {
+window.submitPid = function(event) {
   if (event) {
     event.preventDefault();
   }
@@ -89,13 +89,16 @@ function submitPid(event) {
     return;
   }
 
+  console.log("submitPid called", pid); // 追加: クリック時ログ
   try {
     window.location.assign(`?pid=${encodeURIComponent(pid)}`);
   } catch (e) {
     console.error("submitPid location.assign failed, fallback to search set", e);
     window.location.search = `?pid=${encodeURIComponent(pid)}`;
   }
-}
+};
+
+console.log("submitPid defined on window", typeof window.submitPid);
 
 const pidFromURL = new URLSearchParams(window.location.search).get("pid");
 if (pidFromURL && setParticipantFromPid(pidFromURL)) {
