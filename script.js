@@ -73,6 +73,7 @@ function setParticipantFromPid(pid) {
   return true;
 }
 
+console.log("script.js loaded");
 window.submitPid = function(event) {
   if (event) {
     event.preventDefault();
@@ -115,8 +116,13 @@ function bindPidSubmit() {
     return;
   }
 
+  // 修正: 古い inline onclick があれば削除して、エラーになる古い submitPid 参照を防止
+  if (pidSubmit.hasAttribute("onclick")) {
+    pidSubmit.removeAttribute("onclick");
+  }
+
   // 修正: DOM 構築後に送信ボタンのイベントを登録し、デフォルト動作を止めて明示的に遷移する
-  console.log("bindPidSubmit: binding pid submit handler"); // 追加: バインド確認用ログ
+  console.log("bindPidSubmit: binding pid submit handler");
   pidSubmit.addEventListener("click", (event) => {
     event.preventDefault();
     const pid = pidInput.value.trim();
