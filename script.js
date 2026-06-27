@@ -25,53 +25,60 @@ function getConditionFormID(pid) { //条件を決める
   return null;
 }
 
-const parms = new URLSearchParams(window.location.search);
-const pidFromURL = parms.get("pid");
+const pidInputArea = document.getElementById("pid-input-area");
+const startButton = document.getElementById("start");
+const finishButton = document.getElementById("finish");
+const quizDiv = document.getElementById("quiz");
 
-if(!pidFromURL) {
-  document.getElementById("pid-input-area").style.display = "block"; //参加者IDをURLから取得できない場合に入力画面表示
-  document.getElementById("start").style.display = "none";
-  document.getElementById("finish").style.display = "none";
-  document.getElementById("quiz").style.display = "none"; //クイズを非表示
-} else { //参加者IDがURLから取得できる場合
-  const cond = getConditionFormID(pidFromURL);
-  if (cond) {
-    window.participantId = pidFromURL;
-    window.learnType = cond.learnType;
-    window.answerType = cond.answerType;
-    window.condition = `${cond.learnType}_learn_${cond.answerType}_answer`;
-    console.log("URLから参加者IDを取得:", window.condition);
-    initializeQuiz(); // 修正: pid設定後にquizを初期化（generateChoices()もここで実行される）
-    document.getElementById("pid-input-area").style.display = "none"; // 修正: 有効なPIDの場合は入力画面を隠す
-    document.getElementById("start").style.display = "block"; // 修正: 開始ボタンを表示する
-    document.getElementById("quiz").style.display = "none";
-    document.getElementById("finish").style.display = "none";
-  } else {
-    // 修正: 無効な参加者IDが来た場合は開始前にUIを戻す
-    alert("無効な参加者IDです。1〜900の数字を指定してください。");
-    document.getElementById("pid-input-area").style.display = "block";
-    document.getElementById("start").style.display = "none";
-    document.getElementById("finish").style.display = "none";
-    document.getElementById("quiz").style.display = "none";
-  }
+function showPidInputState() {
+  pidInputArea.style.display = "block";
+  startButton.style.display = "none";
+  quizDiv.style.display = "none";
+  finishButton.style.display = "none";
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const pid = urlParams.get("pid");
-  if (pid) {
-    const cond = getConditionFormID(pid);
-    if (cond) {
-      window.participantId = pid;
-      window.learnType = cond.learnType;
-      window.answerType = cond.answerType;
-      window.condition = `${cond.learnType}_learn_${cond.answerType}_answer`;
-      document.getElementById("pid-input-area").style.display = "none";
-      document.getElementById("start").style.display = "block";
-      initializeQuiz();
-    }
+function showStartState() {
+  pidInputArea.style.display = "none";
+  startButton.style.display = "block";
+  quizDiv.style.display = "none";
+  finishButton.style.display = "none";
+}
+
+function showQuizState() {
+  pidInputArea.style.display = "none";
+  startButton.style.display = "none";
+  quizDiv.style.display = "block";
+  finishButton.style.display = "block";
+}
+
+function showAnalogState() {
+  pidInputArea.style.display = "none";
+  startButton.style.display = "none";
+  quizDiv.style.display = "none";
+  finishButton.style.display = "block";
+}
+
+function setParticipantFromPid(pid) {
+  const cond = getConditionFormID(pid);
+  if (!cond) {
+    alert("無効な参加者IDです。1〜900の数字を指定してください。");
+    showPidInputState();
+    return false;
   }
-});
+
+  window.participantId = pid;
+  window.learnType = cond.learnType;
+  window.answerType = cond.answerType;
+  window.condition = `${cond.learnType}_learn_${cond.answerType}_answer`;
+  return true;
+}
+
+const pidFromURL = new URLSearchParams(window.location.search).get("pid");
+if (pidFromURL && setParticipantFromPid(pidFromURL)) {
+  showStartState();
+} else {
+  showPidInputState();
+}
 
 const pidSubmit = document.getElementById("pid-submit");
 if (pidSubmit) {
@@ -81,14 +88,9 @@ if (pidSubmit) {
       alert("有効な参加者IDを入力してください（1〜900の数字）。");
       return;
     }
-    window.location.href = `?pid=${pid}`
-  }
-  );
+    window.location.href = `?pid=${pid}`;
+  });
 }
-
-document.getElementById("start").addEventListener("click", () => {
-  showQuestions();
-});
 
 const Questions = [
     {
@@ -167,7 +169,6 @@ function initializeQuiz() {
   });
 }
 
-const quizDiv = document.getElementById("quiz");
 const startTimes = {};
 
 function showQuestions() {
