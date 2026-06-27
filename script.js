@@ -89,16 +89,25 @@ function bindPidSubmit() {
   }
 
   // 修正: DOM 構築後に送信ボタンのイベントを登録し、デフォルト動作を止めて明示的に遷移する
+  console.log("bindPidSubmit: binding pid submit handler"); // 追加: バインド確認用ログ
   pidSubmit.addEventListener("click", (event) => {
     event.preventDefault();
     const pid = pidInput.value.trim();
+    console.log("pidSubmit clicked, pid=", pid); // 追加: クリック時ログ
 
     if (!pid || isNaN(pid) || Number(pid) < 1 || Number(pid) > 900) {
       alert("有効な参加者IDを入力してください（1〜900の数字）。");
       return;
     }
 
-    window.location.href = `?pid=${encodeURIComponent(pid)}`;
+    // 修正: 通常の location.href に加え、assign を使ったフォールバックを用意
+    try {
+      window.location.assign(`?pid=${encodeURIComponent(pid)}`);
+    } catch (e) {
+      // 万一失敗した場合は search を直接書き換えてみる
+      console.error("location.assign failed, fallback to search set", e);
+      window.location.search = `?pid=${encodeURIComponent(pid)}`;
+    }
   });
 }
 
