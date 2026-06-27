@@ -102,7 +102,13 @@ function bindPidSubmit() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", bindPidSubmit);
+// 修正: スクリプトが body の末尾で読み込まれる場合、DOMContentLoaded は既に発火している可能性がある。
+// そのため、まだ読み込み中ならイベントで登録し、既に読み込み済みなら即時バインドする。
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", bindPidSubmit);
+} else {
+  bindPidSubmit();
+}
 
 const Questions = [
     {
