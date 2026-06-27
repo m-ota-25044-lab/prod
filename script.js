@@ -73,6 +73,30 @@ function setParticipantFromPid(pid) {
   return true;
 }
 
+function submitPid(event) {
+  if (event) {
+    event.preventDefault();
+  }
+  const pidInput = document.getElementById("pid");
+  if (!pidInput) {
+    alert("参加者ID入力欄が見つかりません。");
+    return;
+  }
+
+  const pid = pidInput.value.trim();
+  if (!pid || isNaN(pid) || Number(pid) < 1 || Number(pid) > 900) {
+    alert("有効な参加者IDを入力してください（1〜900の数字）。");
+    return;
+  }
+
+  try {
+    window.location.assign(`?pid=${encodeURIComponent(pid)}`);
+  } catch (e) {
+    console.error("submitPid location.assign failed, fallback to search set", e);
+    window.location.search = `?pid=${encodeURIComponent(pid)}`;
+  }
+}
+
 const pidFromURL = new URLSearchParams(window.location.search).get("pid");
 if (pidFromURL && setParticipantFromPid(pidFromURL)) {
   showStartState();
