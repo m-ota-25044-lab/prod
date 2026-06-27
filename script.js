@@ -80,17 +80,29 @@ if (pidFromURL && setParticipantFromPid(pidFromURL)) {
   showPidInputState();
 }
 
-const pidSubmit = document.getElementById("pid-submit");
-if (pidSubmit) {
-  pidSubmit.addEventListener("click", () => {
-    const pid = document.getElementById("pid").value;
-    if (!pid || isNaN(pid) || pid < 1 || pid > 900) {
+function bindPidSubmit() {
+  const pidInput = document.getElementById("pid");
+  const pidSubmit = document.getElementById("pid-submit");
+
+  if (!pidInput || !pidSubmit) {
+    return;
+  }
+
+  // 修正: DOM 構築後に送信ボタンのイベントを登録し、デフォルト動作を止めて明示的に遷移する
+  pidSubmit.addEventListener("click", (event) => {
+    event.preventDefault();
+    const pid = pidInput.value.trim();
+
+    if (!pid || isNaN(pid) || Number(pid) < 1 || Number(pid) > 900) {
       alert("有効な参加者IDを入力してください（1〜900の数字）。");
       return;
     }
-    window.location.href = `?pid=${pid}`;
+
+    window.location.href = `?pid=${encodeURIComponent(pid)}`;
   });
 }
+
+document.addEventListener("DOMContentLoaded", bindPidSubmit);
 
 const Questions = [
     {
